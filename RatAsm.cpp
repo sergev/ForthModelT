@@ -71,6 +71,10 @@ map<string, int> opcodes =
 
 int main(int argc, char** argv)
 {
+    if (argc != 3) {
+        printf("Usage: %s input.asm output.bin\n", argv[0]);
+        return 0;
+    }
     char* image = new char[65536];
     int memtop = 0;
 
@@ -118,6 +122,10 @@ int main(int argc, char** argv)
     symbols["NULL"].second.push_back(nval);
 
     FILE* fin = fopen(argv[1], "rt");
+    if (!fin) {
+        perror(argv[1]);
+        return 0;
+    }
 
     char buffer[1024];
     while (fgets(buffer, 1024, fin) != nullptr && !feof(fin))
@@ -339,6 +347,10 @@ int main(int argc, char** argv)
     }
 
     FILE* fout = fopen(argv[2], "wb");
+    if (!fout) {
+        perror(argv[2]);
+        return 0;
+    }
     fwrite(image, memtop, 1, fout);
     fclose(fout);
 

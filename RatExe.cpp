@@ -1,7 +1,11 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
-#include <conio.h>
-#include <io.h>
+#ifdef _WIN32
+#   include <conio.h>
+#   include <io.h>
+#else
+#   include <unistd.h>
+#endif
 #include <stdlib.h>
 #include <sys/stat.h>
 
@@ -16,8 +20,21 @@ using namespace std;
 #define STACK_SIZE 16384
 #define STACK_START (IMAGE_SIZE-STACK_SIZE)
 
+static long filelength(FILE *fd)
+{
+    long pos = ftell(fd);
+    fseek(fd, 0L, SEEK_END);
+    long size = ftell(fd);
+    fseek(fd, pos, SEEK_SET);
+    return size;
+}
+
 int main(int argc, char** argv)
 {
+    if (argc != 2) {
+        printf("Usage: %s filename\n", argv[0]);
+        return 0;
+    }
     unsigned short pc = 0;
     unsigned short sp = STACK_SIZE;
     short p = 0;
@@ -34,12 +51,16 @@ int main(int argc, char** argv)
 
 // Read in the program
     FILE* fin = fopen(argv[1], "rb");
-    int size = _filelength(_fileno(fin));
+    if (!fin) {
+        perror(argv[1]);
+        return 0;
+    }
+    int size = filelength(fin);
     if(size < IMAGE_SIZE-STACK_SIZE)
-        fread(image, _filelength(_fileno(fin)), 1, fin);
+        fread(image, size, 1, fin);
     else
     {
-        printf("Critical error: the program is too large.");
+        printf("Critical error: the program is too large.\n");
         running = false;
     }
     fclose(fin);
@@ -251,7 +272,7 @@ int main(int argc, char** argv)
                     char* arg1 = &image[*(unsigned short*)& stack[sp+4]];
                     char* arg2 = &image[*(unsigned short*)& stack[sp+2]];
                     FILE* res = fopen(arg1, arg2);
-                    if (res > 0)
+                    if (res != NULL)
                     {
                         for(short i=1; i<(short)handles.size(); ++i)
                             if (handles[i] == (FILE*)0)
@@ -295,7 +316,9 @@ int main(int argc, char** argv)
             case 65536 - 5: // gets
                 if (sp + 4 <= STACK_SIZE)
                 {
-                    gets_s(&image[*(unsigned short*)&stack[sp+2]], 80);
+                    char *str = &image[*(unsigned short*)&stack[sp+2]];
+                    fgets(str, 80, stdin);
+                    strtok(str, "\r\n");
                 }
                 break;
             case 65536 - 6: // putc
@@ -318,7 +341,7 @@ int main(int argc, char** argv)
                 break;
             // The following were added for Forth system but some are still usable in RatC code (those using long aren't)
             case 65536 - 9: // getch
-                p = _getch();
+                p = getchar();
                 break;
             case 65536 - 10: // remove
                 if (sp + 4 <= STACK_SIZE)
@@ -381,7 +404,7 @@ int main(int argc, char** argv)
                     auto h = *(unsigned short*)&stack[sp + 2];
                     if (h < handles.size())
                     {
-                        long size = _filelength(_fileno(handles[h]));
+                        long size = filelength(handles[h]);
                         p = size & 0xffff;
                         s = size >> 16;
                     }
@@ -396,7 +419,7 @@ int main(int argc, char** argv)
                     if (h < handles.size())
                     {
                         long size = (long)((((unsigned long)*(unsigned short*)&stack[sp + 4]) << 16) + *(unsigned short*)&stack[sp + 6]);
-                        p = _chsize(_fileno(handles[h]), size);
+                        p = ftruncate(fileno(handles[h]), size);
                     }
                     else
                         p = -1;
