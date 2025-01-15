@@ -10,9 +10,9 @@
 ; Providing names from the Programming-Tools word set
 ; Providing names from the String word set
 ; Providing the Double-Number word set
-; Providing the File-Access word set 
+; Providing the File-Access word set
 ; Providing names from the Facility word set
-; 
+;
 ; This system will pass all standard tests for Core, Core Extensions, Double-Number, and File Access.
 ; The supplied subset of Facility word set is sufficient to pass that test completely (only five words are tested).
 ; The partial Programming-Tools and String wordsets are compliant and will also pass individual tests.
@@ -36,14 +36,14 @@ start
 	equ #nstflag		64			; flag for words not in ANS Forth
 	equ #true			-1			; required by current standard
 	equ #false			0
-	
+
 	equ #memtop			47104		; the memory between 46K and 47K is used for file buffers and other disk access services
 	equ _ibuf			47104		; seven 100-char buffers for INCLUDE-FILE
 	equ _sbuf			47804		; two 100-char buffers for S" / S\"
 	equ _fnamebuf		48004		; buffer for filename storage only
 	equ _sflip			48104		; flip-flop for S" buffer selection
 	equ _ibufcount		48106		; number of used buffers
-	
+
 	equ _ri				48128		; the memory between 47K and 48K is used for internal variables and buffers
 	equ _w				48130
 	equ _rstack			48132
@@ -59,7 +59,7 @@ start
 	equ _sdiv			48150
 	equ _scarry			48152		; register for carry as the VM does not have the flag
 	equ _sstack			48154		; reference stack bottom
-	
+
 	equ _tib			48200		; input buffer (reserving 100 bytes although only 81 are really needed)
 	equ _wordbuf		48300		; buffer to hold result of WORD (reserving 100 bytes)
 	equ _findbuf		48400		; used by FIND to keep case-converted pattern word
@@ -108,7 +108,7 @@ start
 		sdir.w _ibufcount
 		addr 0
 		sdir.w _sstack
-		
+
 ; ==============================================================================
 
 ; Structure of a vocabulary word in indirect threaded code:
@@ -176,7 +176,7 @@ return:	ldir.w _rstack
 		lind.w
 		sdir.w _ri
 		ujump next
-		
+
 ; INVOKE - this will execute word by CFA and continue to the next word (exposed to the language as EXECUTE)
 ;	W = pop()
 ;	goto mem(W)
@@ -411,7 +411,7 @@ add_c:	pop
 		add
 		push
 		ujump next
-		
+
 sub_n:	db 1, "-"
 		db add_n
 sub:	db sub_c
@@ -421,7 +421,7 @@ sub_c:	pop
 		sub
 		push
 		ujump next
-		
+
 mult_n:	db 1, "*"
 		db sub_n
 ; mult:	db call, mmult, drop, exit
@@ -432,7 +432,7 @@ mult_c:	pop
 		mult
 		push
 		ujump next
-		
+
 div_n:	db 1, "/"
 		db mult_n
 ; div:	db call, divmod, nip, exit
@@ -443,7 +443,7 @@ div_c:	pop
 		div
 		push
 		ujump next
-		
+
 mod_n:	db 3, "MOD"
 		db div_n
 ; mod:	db call, divmod, drop, exit
@@ -454,7 +454,7 @@ mod_c:	pop
 		mod
 		push
 		ujump next
-		
+
 divmod_n:	db 4, "/MOD"
 			db mod_n
 ; divmod:	db call, tor, stod, rfrom, smrem, exit
@@ -500,7 +500,7 @@ negate_c:	pop
 			neg
 			push
 			ujump next
-		
+
 oneplus_n:	db 2, "1+"
 			db negate_n
 ; oneplus:	db call, one, add, exit
@@ -510,7 +510,7 @@ oneplus_c:	pop
 			inc 1
 			push
 			ujump next
-		
+
 oneminus_n:	db 2, "1-"
 			db oneplus_n
 ; oneminus:	db call, one, sub, exit
@@ -520,7 +520,7 @@ oneminus_c:	pop
 			dec 1
 			push
 			ujump next
-		
+
 twoplus_n:	db 66, "2+"
 			db oneminus_n
 ; twoplus:	db call, two, add, exit
@@ -530,7 +530,7 @@ twoplus_c:	pop
 			inc 2
 			push
 			ujump next
-		
+
 twominus_n:	db 66, "2-"
 			db twoplus_n
 ; twominus:	db call, two, sub, exit
@@ -540,7 +540,7 @@ twominus_c:	pop
 			dec 2
 			push
 			ujump next
-		
+
 twodiv_n:	db 2, "2/"
 			db twominus_n
 twodiv:		db twodiv_c
@@ -549,7 +549,7 @@ twodiv_c:	pop
 			asr
 			push
 			ujump next
-			
+
 twomult_n:	db 2, "2*"
 			db twodiv_n
 twomult:	db twomult_c
@@ -573,7 +573,7 @@ lshift_c:	pop
 			asl
 			push
 			ujump next
-			
+
 rshift_n:	db 6, "RSHIFT"
 			db lshift_n
 rshift:		db rshift_c
@@ -616,7 +616,7 @@ stod_1:		db zero, exit
 ; Optional Double=number word set
 dnegate_n:	db 7, "DNEGATE"
 			db stod_n
-dnegate:	db call, invert, swap, invert, swap, one, mplus, exit 
+dnegate:	db call, invert, swap, invert, swap, one, mplus, exit
 
 ; Optional Double-numbler word set
 dabs_n:		db 4, "DABS"
@@ -869,7 +869,7 @@ and_c:	pop
 		and
 		push
 		ujump next
-		
+
 or_n:	db 2, "OR"
 		db and_n
 or:		db or_c
@@ -879,7 +879,7 @@ or_c:	pop
 		or
 		push
 		ujump next
-		
+
 xor_n:	db 3, "XOR"
 		db or_n
 xor:	db xor_c
@@ -934,7 +934,7 @@ zerolt_c:	pop
 zerogt_n:	db 2, "0>"
 			db zerolt_n
 zerogt:		db call, zero, swap, less, exit
-			
+
 zerone_n:	db 3, "0<>"
 			db zerogt_n
 zerone:		db call, zeroeq, zeroeq, exit
@@ -1046,13 +1046,13 @@ dup_c:	pop
 		push
 		push
 		ujump next
-		
+
 drop_n:	db 4, "DROP"
 		db dup_n
 drop:	db drop_c
 drop_c:	pop
 		ujump next
-		
+
 over_n:	db 4, "OVER"
 		db drop_n
 over:	db over_c
@@ -1066,7 +1066,7 @@ over_c:	pop
 		swap
 		push
 		ujump next
-		
+
 swap_n:	db 4, "SWAP"
 		db over_n
 swap:	db swap_c
@@ -1194,7 +1194,7 @@ twoover:	db call, tor, tor, twodup, rfrom, rfrom, twoswap, exit
 
 qdup_n:	db 4, "?DUP"
 		db twoover_n
-qdup:	db call, dup, qbranch, qdup_1, dup 
+qdup:	db call, dup, qbranch, qdup_1, dup
 qdup_1: db exit
 
 ; ==============================================================================
@@ -1212,15 +1212,15 @@ qdup_1: db exit
 cellplus_n:	db 5, "CELL+"
 			db qdup_n
 cellplus:	db call, twoplus, exit
-			
+
 cells_n:	db 5, "CELLS"
 			db cellplus_n
 cells:		db call, dup, add, exit
-			
+
 charplus_n:	db 5, "CHAR+"
 			db cells_n
 charplus:	db call, oneplus, exit
-			
+
 chars_n:	db 5, "CHARS"
 			db charplus_n
 chars:		db call, exit	; that's correct, just do nothing
@@ -1257,7 +1257,7 @@ rfrom_c:	ldir.w _rstack
 			lind.w
 			push
 			ujump next
-			
+
 tor_n:	db 2, ">R"
 		db rfrom_n
 tor:	db tor_c
@@ -1269,7 +1269,7 @@ tor_c:	ldir.w _rstack
 		dec 2
 		sdir.w _rstack
 		ujump next
-		
+
 rat_n:	db 2, "R@"
 		db tor_n
 rat:	db rat_c
@@ -1278,7 +1278,7 @@ rat_c:	ldir.w _rstack
 		lind.w
 		push
 		ujump next
-		
+
 rdrop_n:	db 69, "RDROP"
 			db rat_n
 rdrop:		db rdrop_c
@@ -1393,7 +1393,7 @@ twopoke:	db call, swap, over, poke, cellplus, poke, exit
 twopeek_n:	db 2, "2@"
 			db twopoke_n
 twopeek:	db call, dup, cellplus, peek, swap, peek, exit
-			
+
 ; ==============================================================================
 ; Literal. One of the most common words to see in the compiled code - will take the next parameter and
 ; push it to stack
@@ -1422,8 +1422,8 @@ lit_c:	ldir.w _ri
 ;
 ; variable base
 ; : <@ _hldend _hld ! ;
-; : # base @ ud/mod rot '0' + dup '9' > if 7 + then hold ; 
-; : #s begin # 2dup or 0= until ; 
+; : # base @ ud/mod rot '0' + dup '9' > if 7 + then hold ;
+; : #s begin # 2dup or 0= until ;
 ; : #> 2drop _hld @ _hldend over - ;
 ; : hold _hld @ 1 - dup _hld ! c! ;
 ; : holds begin dup while 1- 2dup + c@ hold again 2drop ;
@@ -1747,7 +1747,7 @@ parsename_2:	db twodrop, bl, parse, exit
 
 ; Forth systems typically have a few words to move between different parts of a vocabulary word. In the indirect
 ; threaded code the only non-trivial move is the one between LFA and NFA. In this particular model it abuses the
-; fact that the maximum NFA length is 32+1 and the name cannot include characters with codes below 32. 
+; fact that the maximum NFA length is 32+1 and the name cannot include characters with codes below 32.
 lfatonfa_n:	db 70, "L>NAME"
 			db parsename_n
 lfatonfa:	db call, oneminus, zero
@@ -1998,7 +1998,7 @@ colon:		db call, create, lit, call, here, twominus, dup, tor, poke, rfrom, twomi
 ;
 ; : :noname here 0 , latest , _latest ! here ' call , ] ;
 ;
- 
+
 colonnoname_n:	db 7, ":NONAME"
 				db colon_n
 colonnoname:	db call, here, zero, ccomma			; set 0-length NFA
@@ -2008,7 +2008,7 @@ colonnoname:	db call, here, zero, ccomma			; set 0-length NFA
 bufferc_n:		db 7, "BUFFER:"
 				db colonnoname_n
 bufferc:		db call, create, allot, exit
-				
+
 semicolon_n:	db 129, ";"
 				db bufferc_n
 semicolon:		db call, qcomp, compile, exit, bracket, latest, context, poke, exit
@@ -2144,7 +2144,7 @@ squote_n:	db 130, 'S"'
 			db cquote_n
 squote:		db call, state, peek, zerone, qbranch, squote_1, cquote, compile, count, exit
 squote_1:	db lit, 34, 0, parse, lit, _sbuf, lit, _sflip, peek, lit, 100, 0, mult, add, swap, twotor, tworat, cmove
-			db tworfrom, lit, _sflip, dup, peek, one, xor, swap, poke, exit 
+			db tworfrom, lit, _sflip, dup, peek, one, xor, swap, poke, exit
 
 ssquote_n:	db 131, 'S\"'
 			db squote_n
@@ -2152,7 +2152,7 @@ ssquote:	db call, tib, ptrin, peek, add, lit, _sbuf, lit, _sflip, peek, lit, 100
 			db smove, swap, ptrin, incpoke
 			db rfrom, swap, lit, _sflip, dup, peek, one, xor, swap, poke
 			db state, peek, qbranch, ssquote_1, compile, branch, fmark, here, two, pick, dup, ccomma, allot, swap, fresolve
-			db compile, lit, dup, comma, compile, count, oneplus, swap, cmove 
+			db compile, lit, dup, comma, compile, count, oneplus, swap, cmove
 ssquote_1:	db exit
 
 dotquote_n:	db 130, '."'
@@ -2258,7 +2258,7 @@ repeat_n:	db 134, "REPEAT"
 
 ; DO/LOOP are considerably more complex so they are often implemented with helper words. In practical
 ; implementations these helpers are done in native code, so are I, J, and LEAVE.
-; (DO) stores on the return stack: leaveaddr, limit, current, (ret) 
+; (DO) stores on the return stack: leaveaddr, limit, current, (ret)
 xdo_n:		db 68, "(DO)"
 			db repeat_n
 xdo:		db call
@@ -2275,7 +2275,7 @@ xqdo_1:		db rfrom, dup, peek, tor	; forward ref for LEAVE
 			db rot, tor, swap, tor,
 			db twoplus, tor				; step over the actual forward ref
 			db exit
-			
+
 ; and (LOOP) adjusts the values on rstack or just drops the top three values from it to exit
 xloop_n:	db 70, "(LOOP)"
 			db xqdo_n
@@ -2324,7 +2324,7 @@ j:		db call
 leave_n:	db 5, "LEAVE"
 			db j_n
 leave:		db call, rdrop, rdrop, rdrop, exit
-			
+
 unloop_n:	db 6, "UNLOOP"
 			db leave_n
 unloop:		db call, rfrom, rdrop, rdrop, rdrop, tor, exit
@@ -2407,7 +2407,7 @@ smove_13:	db dup, lit, "x", 0, equal, qbranch, smove_0, drop
 			db hex, dup, twoplus, swap, zero, zero, rot, two, tonumber, qbranch, smove_14
 			db twodrop, twodrop, rdrop, rdrop, rfrom, rfrom, base, poke, exit
 smove_14:	db twodrop
-smove_0:	db rfrom, swap, over, cpoke, oneplus, rfrom, rfrom, oneplus, tor, branch, smove_1 
+smove_0:	db rfrom, swap, over, cpoke, oneplus, rfrom, rfrom, oneplus, tor, branch, smove_1
 smove_x:	db nip, nip, rfrom, rfrom, base, poke, rfrom, rot, sub, swap, exit
 
 pad_n:	db 3, "PAD"
@@ -2603,51 +2603,51 @@ mmuldiv_1:	db exit
 env_counted_n:	db 79, "/COUNTED-STRING"
 				db mmuldiv_n
 				db doconst, 255, 0
-				
+
 env_hold_n:		db 69, "/HOLD"
 				db env_counted_n
 				db doconst, 98, 0
-				
+
 env_pad_n:		db 68, "/PAD"
 				db env_hold_n
 				db doconst, 100, 0
-				
+
 env_bits_n:		db 81, "ADDRESS-UNIT-BITS"
 				db env_pad_n
 				db doconst, 16, 0
-				
+
 env_floored_n:	db 71, "FLOORED"
 				db env_bits_n
 				db call, true, exit
-				
+
 env_maxchar_n:	db 72, "MAX-CHAR"
 				db env_floored_n
 				db doconst, 255, 0
-				
+
 env_maxd_n:		db 69, "MAX-D"
 				db env_maxchar_n
 				db call, dlit, 255, 255, 255, 127, exit
-				
+
 env_maxn_n:		db 69, "MAX-N"
 				db env_maxd_n
 				db doconst, 255, 127
-				
+
 env_maxu_n:		db 69, "MAX-U"
 				db env_maxn_n
 				db doconst, 255, 255
-				
+
 env_maxud_n:	db 70, "MAX-UD"
 				db env_maxu_n
 				db call, dlit, 255, 255, 255, 255, exit
-				
+
 env_rstack_n:	db 82, "RETURN-STACK-CELLS"
 				db env_maxud_n
 				db doconst, 0, 16
-				
+
 env_stack_n:	db 75, "STACK-CELLS"
 				db env_rstack_n
 				db doconst, 240, 15
-				
+
 environmentq_n:	db 12, "ENVIRONMENT?"
 				db env_stack_n
 environmentq:	db call, xfind, dup, qbranch, environmentq_1, count, lit, #namemask, and, add, twoplus, execute, true
@@ -2787,7 +2787,7 @@ xreadchar_c:	call _getc
 				pop
 				push
 				ujump next
-				
+
 xreadtchar:		db xreadtchar_c
 xreadtchar_c:	call _getc
 				swap
@@ -2807,7 +2807,7 @@ readline:	db call, tor, swap, dup, rot, add, over					; c-addr, c-addr-limit, cu
 readline_1:	db twodup, swap, uless, qbranch, readline_4				; buffer full?
 			db rat, xreadtchar, dup, zerolt, invert, qbranch, readline_2	; end of file?
 			db dup, lit, 10, 0, notequal, qbranch, readline_3		; end of line
-			db over, cpoke, oneplus, branch, readline_1 
+			db over, cpoke, oneplus, branch, readline_1
 readline_2:	db drop, swap, drop, swap, sub, dup, zeroeq, qbranch, readline_5, false, branch, readline_6
 readline_3:	db drop
 readline_4:	db swap, drop, swap, sub
@@ -2819,7 +2819,7 @@ readfile_n:	db 9, "READ-FILE"
 readfile:	db call, tor, swap, dup, rot, add, over					; c-addr, c-addr-limit, current
 readfile_1:	db twodup, swap, uless, qbranch, readfile_3				; buffer full?
 			db rat, xreadchar, dup, zerolt, invert, qbranch, readfile_2		; end of file?
-			db over, cpoke, oneplus, branch, readfile_1 
+			db over, cpoke, oneplus, branch, readfile_1
 readfile_2:	db drop
 readfile_3:	db swap, drop, swap, sub, zero, rdrop, exit
 
@@ -2887,15 +2887,15 @@ required_1:	db twodrop, exit
 beginstructure_n:	db 15, "BEGIN-STRUCTURE"
 					db required_n
 					db call, create, here, zero, zero, comma, xcode, 11, does, peek, exit
-					
+
 endstructure_n:	db 13, "END-STRUCTURE"
 				db beginstructure_n
 				db call, swap, poke, exit
-				
+
 addfield_n:	db 6, "+FIELD"
 			db endstructure_n
 addfield:	db call, create, over, comma, add, xcode, 11, does, peek, add, exit
-			
+
 field_n:	db 6, "FIELD:"
 			db addfield_n
 			db call, two, addfield, exit

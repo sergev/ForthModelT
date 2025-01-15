@@ -162,7 +162,7 @@ int main(int argc, char** argv)
                     int opcode = it->second;
                     int t = opcode & typemask;
                     opcode = opcode & ~typemask;
-                    
+
                     if (opcode == 0)
                     {
                         if (t == value) // ds

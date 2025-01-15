@@ -56,7 +56,7 @@ The assembler and VM can be used with the original RatC as it was published in t
 ### Future plans
 I don't really plan to do anything with this project but if I decide to get back to it I would probably try to get a 32-bit version of the VM working. The source code may use some cleanups, that's if I get time.
 There are a few more sections of the standard that can be added to the system. Search order is the most obvious. I don't think I will ever bother with floating point, given the CPU architecture.
-Other that that, there are a lot of tricks that can be done with little system modifications, like making it multitasked. 
+Other that that, there are a lot of tricks that can be done with little system modifications, like making it multitasked.
 
 ### FAQ
 *Why "Forth Model T"?*
