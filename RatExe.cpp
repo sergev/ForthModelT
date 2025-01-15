@@ -6,6 +6,7 @@
 #else
 #   include <unistd.h>
 #endif
+#include <cstring>
 #include <stdlib.h>
 #include <sys/stat.h>
 
@@ -56,8 +57,12 @@ int main(int argc, char** argv)
         return 0;
     }
     int size = filelength(fin);
-    if(size < IMAGE_SIZE-STACK_SIZE)
-        fread(image, size, 1, fin);
+    if (size < IMAGE_SIZE-STACK_SIZE) {
+        if (fread(image, size, 1, fin) != 1) {
+            perror(argv[1]);
+            return 0;
+        }
+    }
     else
     {
         printf("Critical error: the program is too large.\n");
@@ -317,7 +322,9 @@ int main(int argc, char** argv)
                 if (sp + 4 <= STACK_SIZE)
                 {
                     char *str = &image[*(unsigned short*)&stack[sp+2]];
-                    fgets(str, 80, stdin);
+                    if (!fgets(str, 80, stdin)) {
+                        return 0;
+                    }
                     strtok(str, "\r\n");
                 }
                 break;

@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <map>
 #include <string>
+#include <cstring>
 #include <list>
 
 using namespace std;
